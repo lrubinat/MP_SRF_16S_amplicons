@@ -26,26 +26,30 @@ Table dimensions and content outline:
 
 ``` {r load_data, echo=FALSE}
 #setwd("/genwork/lrubinat")
-setwd("/home/laura/Documents/TFM/genwork/data_analysis/MP_16S_SRF_amplicons/MP_16S_amplicons_ss5000/")
+setwd("/home/laura/Documents/TFM/genwork/data_analysis/MP_16S_SRF_amplicons/MP_16S_amplicons_ss5000/MP_16S_amplicons_ss5000_bacteria/")
 
 #read data 
-otu_tb16_5000 <- read.table(file="/home/laura/Documents/TFM/home/data/MALASPINA/16S_otu_table_no_hyphen.txt", head=TRUE, fill=TRUE)
+otu_tb16_bacteria_plus_chlor <- read.table(file="/home/laura/Documents/TFM/home/data/MALASPINA/16S_otu_table_no_hyphen.txt", head=TRUE, fill=TRUE)
 
 #table dimensions and format before setting column names
-#dim(otu_tb16_5000) # 1315   125
-#otu_tb16_5000[1:5,1:5]
+#dim(otu_tb16_bacteria_plus_chlor) # 1315   125
+#otu_tb16_bacteria_plus_chlor[1:5,1:5]
 
 #row names = OTU name (option A)
-row.names(otu_tb16_5000)<-otu_tb16_5000[,1]
+row.names(otu_tb16_bacteria_plus_chlor)<-otu_tb16_bacteria_plus_chlor[,1]
 
 #row names = row number (option B)
 #rownames(otu_tb18) <- 1:nrow(otu_tb18)
 
-otu_tb16_5000<-otu_tb16_5000[,-1]
-otu_tb16_5000[is.na(otu_tb16_5000)]<-0
+otu_tb16_bacteria_plus_chlor<-otu_tb16_bacteria_plus_chlor[,-1]
+otu_tb16_bacteria_plus_chlor[is.na(otu_tb16_bacteria_plus_chlor)]<-0
 
-#dim(otu_tb16_5000) #  56116   124
-#otu_tb16_5000[1:5,1:5]
+dim(otu_tb16_bacteria_plus_chlor) #  1315  124
+otu_tb16_bacteria_plus_chlor[1:5,1:5]
+
+#remove OTUs corresponding to chloroplasts
+otu_tb16_5000<-otu_tb16_bacteria_plus_chlor[!rownames(otu_tb16_bacteria_plus_chlor) %in% c("3", "4"), ]
+
 
 #remove samples with less than 5000 OTUs
 otu_tb16_min5000<-otu_tb16_5000[,colSums(otu_tb16_5000) > 5000]
@@ -430,18 +434,15 @@ abline(v=0.001, col="blue") #cosmopolitan OTUs
 #Regionally abundant = 0.001
 ```
 
-Regionally abundant OTUs (over 0.1% of frequence):
+Regionally abundant OTUs (frequence over 0.1%):
 
-```{r abundant_OTUs, echo=3:6}
+```{r abundant_OTUs, echo=F}
 #regionally abundant
-otu_tb16_ss5000_abundant<-otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund > 0.001,]
-otu_tb16_ss5000_abundant[order(-otu_tb16_ss5000_abundant[,1]),]
-
-otu_tb16_ss5000_abundant_sorted_2<-otu_tb16_ss5000_abundant_sorted[order(otu_tb16_ss5000_abundant_sorted$mean_rabund, decreasing=T), c(1,2)]
-
-otu_tb16_ss5000_abundant_sorted_2
+tb16_ss5000_abundant<-otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund > 0.001,]
+tb16_ss5000_abundant[order(-tb16_ss5000_abundant[,1]),]
 
 dim(otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund > 0.001,])  
+dim(tb16_ss5000_abundant)
 
 #there are 157 regionally abundant OTUs.
 (82/1138)*100 # = 7.29% of the OTUs are regionally abundant
@@ -450,7 +451,7 @@ dim(otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabun
 #row.names(otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund > 0.001,])
 ```
 
-Cosmopolitan OTUs:
+Cosmopolitan OTUs (frequence over 0.1% and occurence in more than 80% of samples):
 
 ```{r select_cosmopolitan, echo=4}
 otu_tb16_ss5000_rabund_cosm<-otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund > 0.001,]
