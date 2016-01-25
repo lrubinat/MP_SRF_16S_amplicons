@@ -289,7 +289,7 @@ plot(otu_tb16_t_ss5000_no_cero.upgma, cex=.35, main="Samples Hierarchical Cluste
 
 ### 3.6.3) Non-metric multidimensional scaling
 
-We can identify a prominent group in the middle right side of the NMDS plot and a few isolated samples in the right edge of the plot. We cannot identify any informative clustering pattern. The stress parameter takes a value below 0.3 (0.1503428), meaning that the plot is valid. 
+We can identify a prominent group in the middle-left side of the NMDS and a few isolated samples in the right edge of the plot. Considering the overall distribution, we're to identify any informative clustering pattern. The stress parameter takes a value below 0.3 (0.1503428), meaning that the plot is valid. 
 
 ```{r monoNMDS, echo=F}
 #NMDS
@@ -388,9 +388,9 @@ MP_16s_ss5000_mantel_correl_by_100km<-mantel.correlog(otu_tb16_t_ss5000_no_cero.
 plot(MP_16s_ss5000_mantel_correl_by_100km)
 ```
 
-# 5) Abundance vs. occurence
+# 5) Abundance & occurence
 
-```{r OTUs_mean_relative_abund, echo=F, message=FALSE}
+```{r OTUs_mean_relative_abund, echo=F, results="hide"}
 otu_tb16_t_ss5000_no_cero[1:5,1:5]
 otu_tb16_t_ss5000_no_cero_t<-t(otu_tb16_t_ss5000_no_cero)
 
@@ -409,7 +409,7 @@ otu_tb16_t_ss5000_no_cero_t.rabund_means<-as.data.frame(otu_tb16_t_ss5000_no_cer
 head(otu_tb16_t_ss5000_no_cero_t.rabund_means)
 ```
 
-```{r OTUs_occurence, echo=F, message=FALSE}
+```{r OTUs_occurence, echo=F, results='hide'}
 otu_tb16_t_ss5000_no_cero_t.rabund.occur<-otu_tb16_t_ss5000_no_cero_t.rabund
 otu_tb16_t_ss5000_no_cero_t.rabund.occur[otu_tb16_t_ss5000_no_cero_t.rabund.occur>0]<-1
 otu_tb16_t_ss5000_no_cero_t.rabund.occur[1:5,1:5] ### presence - absence table
@@ -420,7 +420,7 @@ otu_tb16_t_ss5000_no_cero_t.rabund_means.occurence_perc<-as.data.frame(100*(rowS
 str(otu_tb16_t_ss5000_no_cero_t.rabund_means.occurence_perc)
 ```
 
-```{r merge_rabund_peroccur, echo=F, message=FALSE}
+```{r merge_rabund_peroccur, echo=F, results='hide'}
 otu_tb16_ss5000_rabund_percoccur<-merge(otu_tb16_t_ss5000_no_cero_t.rabund_means,otu_tb16_t_ss5000_no_cero_t.rabund_means.occurence_perc, by="row.names")
 
 colnames(otu_tb16_ss5000_rabund_percoccur)<-c("OTUs","mean_rabund","perc_occur")
@@ -430,6 +430,8 @@ row.names(otu_tb16_ss5000_rabund_percoccur)<-otu_tb16_ss5000_rabund_percoccur[,1
 otu_tb16_ss5000_rabund_percoccur<-otu_tb16_ss5000_rabund_percoccur[,-1]
 otu_tb16_ss5000_rabund_percoccur[1:5,]
 ```
+
+In the following plot, we can appreciate the OTUs distribution according to their percentage of occurence and relative abundance. The red line keeps up OTUs that occur in more than 80% of the samples, the green line limits regionally rare OTUs (0.001%), and the blue one restricts regionally abundant OTUs (> 0.1%).
 
 ```{r abund_vs_occurence_table, echo=F}
 plot(otu_tb16_ss5000_rabund_percoccur$mean_rabund,otu_tb16_ss5000_rabund_percoccur$perc_occur, log="x", pch=19, cex=0.8, xlab="Mean relative abundance", ylab="Percentage of occurence")
@@ -442,14 +444,14 @@ abline(v=0.001, col="blue") #cosmopolitan OTUs
 #Regionally abundant = 0.001
 ```
 
-Regionally abundant OTUs (frequence over 0.1%):
+Regionally abundant OTUs (abundance over 0.1%):
 
-```{r abundant_OTUs, echo=F}
+```{r abundant_OTUs, echo=6}
 #regionally abundant
 tb16_ss5000_abundant<-otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund > 0.001,]
 tb16_ss5000_abundant[order(-tb16_ss5000_abundant[,1]),]
 
-dim(otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund > 0.001,])  
+#dim(otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund > 0.001,])  
 dim(tb16_ss5000_abundant)
 ```
 
@@ -457,29 +459,35 @@ Percentage of regionally abundant OTUs:
 
 ```{r abundant_OTUs2, echo=F}
 #there are 157 regionally abundant OTUs.
-(82/1138)*100 # = 7.29% of the OTUs are regionally abundant
+(84/1138)*100 # = 7.29% of the OTUs are regionally abundant
 
 #length(row.names(otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund > 0.001,])) # 83 OTUs
 #row.names(otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund > 0.001,])
 ```
 
-Cosmopolitan OTUs (frequence over 0.1% and occurence in more than 80% of samples):
+Cosmopolitan OTUs (abundance over 0.1% and occurence in more than 80% of samples):
 
-```{r select_cosmopolitan, echo=4}
+```{r select_cosmopolitan, echo=6}
 otu_tb16_ss5000_rabund_cosm<-otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund > 0.001,]
 otu_tb16_ss5000_rabund_poccur_cosm<-otu_tb16_ss5000_rabund_cosm[otu_tb16_ss5000_rabund_cosm$perc_occur > 80,]
 otu_tb16_ss5000_cosmop_sorted<-otu_tb16_ss5000_rabund_poccur_cosm[order(otu_tb16_ss5000_rabund_poccur_cosm$perc_occur, otu_tb16_ss5000_rabund_poccur_cosm$mean_rabund, decreasing = T), c(1,2)]
 
 otu_tb16_ss5000_cosmop_sorted
+dim(otu_tb16_ss5000_cosmop_sorted)
 ```
 
-Rare OTUs:
+Percentage of cosmopolitan OTUs:
 
-```{r rare_OTUs, echo=T}
-dim(otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund < 0.00001 & otu_tb16_ss5000_rabund_percoccur$mean_rabund >0,]) # 325 OTUs
-# length(row.names(otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund < 0.00001 & otu_tb16_ss5000_rabund_percoccur$mean_rabund >0 ,])) # 325 OTUs
+```{r percentage_cosmopolitan, echo=F}
+(63/1138)*100
+```
+
+Number and percentage of rare OTUs:
+
+```{r rare_OTUs, echo=1}
+dim(otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund < 0.00001 & otu_tb16_ss5000_rabund_percoccur$mean_rabund >0,])
  
-(325/1138)*100 # = 28.56% of the OTUs are regionally rare
+(300/1138)*100 # = 28.56% of the OTUs are regionally rare
 ```
 
 <!---
@@ -487,5 +495,8 @@ dim(otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabun
 dim(otu_tb16_ss5000_rabund_percoccur)
 dim(otu_tb16_min5000_v2)
 otu_tb16_min5000_v2[1:5,1:5]
+
+#rare OTUs:
+# length(row.names(otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund < 0.00001 & otu_tb16_ss5000_rabund_percoccur$mean_rabund >0 ,])) # 325 OTUs
 ```
 --->

@@ -40,8 +40,9 @@ OTUs_occurence	>	[<-	as.data.frame	otu_tb16_t_ss5000_no_cero_t.rabund	rowSums	st
 merge_rabund_peroccur	c	colnames<-	merge	otu_tb16_t_ss5000_no_cero_t.rabund_means	otu_tb16_t_ss5000_no_cero_t.rabund_means.occurence_perc	row.names<-
 abund_vs_occurence_table	$	abline	otu_tb16_ss5000_rabund_percoccur	plot
 abundant_OTUs	>	$	dim	order	otu_tb16_ss5000_rabund_percoccur
-select_cosmopolitan	>	$	c	order	otu_tb16_ss5000_rabund_percoccur	T
+select_cosmopolitan	>	$	c	dim	order	otu_tb16_ss5000_rabund_percoccur	T
 rare_OTUs	<	>	$	&	dim	otu_tb16_ss5000_rabund_percoccur
 otu_col_chech	dim	otu_tb16_min5000_v2	otu_tb16_ss5000_rabund_percoccur
 starting_dataset	dim	otu_tb16_min5000_v2
 abundant_OTUs2	
+percentage_cosmopolitan	
