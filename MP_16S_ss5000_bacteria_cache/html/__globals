@@ -1,4 +1,4 @@
-load_data	<	>	[<-	c	colSums	dim	is.na	MD985	read.table	row.names<-	setwd	subset	which
+load_data	<	>	[<-	c	colSums	is.na	MD985	read.table	row.names<-	setwd	subset	which
 reads_per_sample_overview1	colSums	min	otu_tb16_min5000_v2
 reads_per_sample_overview2	colSums	max	otu_tb16_min5000_v2
 reads_per_sample_overview3	>	colSums	otu_tb16_min5000_v2	which
@@ -28,7 +28,7 @@ monoNMDS	monoMDS	otu_tb16_t_ss5000_no_cero.bray	plot
 metaNMDS	metaMDS	otu_tb16_t_ss5000_no_cero.bray	plot
 load_geo_data	as.matrix	create.lats	dim	earth.dist	head	library	otu_tb16_t_ss5000_no_cero	read.table	row.names	row.names<-	T
 working_datasets1	dim	otu_tb16_t_ss5000_no_cero
-working_datasets2	as.matrix	dim
+working_datasets2	as.matrix
 working_datasets3	dim	geo_distances_MP_16S_ss5000
 working_datasets4	geo_distances_MP_16S_ss5000	otu_tb16_t_ss5000_no_cero.bray	plot
 mantel_correlogram1	geo_distances_MP_16S_ss5000	mantel	otu_tb16_t_ss5000_no_cero.bray
@@ -43,3 +43,5 @@ abundant_OTUs	>	$	dim	order	otu_tb16_ss5000_rabund_percoccur
 select_cosmopolitan	>	$	c	order	otu_tb16_ss5000_rabund_percoccur	T
 rare_OTUs	<	>	$	&	dim	otu_tb16_ss5000_rabund_percoccur
 otu_col_chech	dim	otu_tb16_min5000_v2	otu_tb16_ss5000_rabund_percoccur
+starting_dataset	dim	otu_tb16_min5000_v2
+abundant_OTUs2	
