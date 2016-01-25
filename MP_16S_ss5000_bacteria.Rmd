@@ -181,7 +181,7 @@ boxplot(OTUs_per_sample_16S_ss5000, pch=19)
 pielou_evenness_16S_ss5000 <- otu_tb16_ss5000_div/log(OTUs_per_sample_16S_ss5000)
 ```
 
-The Pielou index (constrained between 0 and 1) takes values closer to 1 as the variation of species proportion in a sample decreases. Most of our samples get values between 0.425 and 0.6, meaning that the numerical composition of different OTUs in each of our samples is relatively similar:
+The Pielou index (constrained between 0 and 1) takes values closer to 1 as the variation of species proportion in a sample decreases. Most of our samples get values between 0.425 and 0.6, meaning that the numerical composition of different OTUs within our samples is relatively similar:
 
 ```{r pielou_index_of_evenness2, echo=TRUE}
 plot(sort(pielou_evenness_16S_ss5000), pch=19)
@@ -194,7 +194,7 @@ The OTU_1, with 241688 reads, is the most abundant in the overall dataset:
 head(sort(colSums(otu_tb16_t_ss5000_no_cero), decreasing=T), n=10L)
 ```
 
-Most of the OTUs show very few occurrences:
+Most of the OTUs show very few occurrences, but we don't identify a massive group of rare OTUs:
 
 ```{r OTUs_overall_abundance2, echo=TRUE}
 plot(log(sort(colSums(otu_tb16_t_ss5000_no_cero), decreasing=T)), pch=19)
@@ -266,7 +266,7 @@ veiledspec(otu_tb16_min5000_dist_all)
 
 ### 3.6.1) Dissimilarity matrix using Bray-Curtis index:
 
-The Bray-Curtis dissimilarity (constrained between 0 and 1) allows us to quantify the differences between samples according to the composition and relative abundance of their OTUs. In our dataset, most of the samples pairs take dissimilarity values between 0.25 and 0.5, meaning that their composition has common.
+The Bray-Curtis dissimilarity, constrained between 0 (minimum distance) and 1 (highest dissimilarity) allows us to quantify the differences between samples according to the composition and relative abundance of their OTUs. In our dataset, most of the samples pairs take dissimilarity values between 0.25 and 0.5.
 
 
 ```{r beta_div1, echo=FALSE}
@@ -277,7 +277,9 @@ boxplot(otu_tb16_t_ss5000_no_cero.bray, main="Bray-Curtis dissimilarity matrix")
 
 ### 3.6.2) Hierarchical clustering
 
-The only relatively evident clusters we can distinguish in the dendogram stand out in the very left side of the plot. The central cluster ranging from samples MD256 to MD2156 could also be informative. TBD: assign Longhurst provinces information to each station.
+The only relatively evident clusters we can distinguish in the dendogram stand out in the very left side of the plot. 
+
+(To be done: assign Longhurst provinces information to each station and check if any of the central clusters is meaningful regarding to the samples geographical ubication)
 
 ```{r beta_div2, echo=FALSE}
 #UPGMA
@@ -287,7 +289,7 @@ plot(otu_tb16_t_ss5000_no_cero.upgma, cex=.35, main="Samples Hierarchical Cluste
 
 ### 3.6.3) Non-metric multidimensional scaling
 
-We can identify a prominent group in the middle right side of the NMDS plot and a few isolated samples in the right edge of the plot. The stress parameter takes a value below 0.3 (0.1503428), meaning that the plot is valid. 
+We can identify a prominent group in the middle right side of the NMDS plot and a few isolated samples in the right edge of the plot. We cannot identify any informative clustering pattern. The stress parameter takes a value below 0.3 (0.1503428), meaning that the plot is valid. 
 
 ```{r monoNMDS, echo=F}
 #NMDS
@@ -344,7 +346,7 @@ otu_tb16_t_ss5000_no_cero[1:5, 1:5]
 
 2) Community Bray-Curtis: otu_tb16_t_ss5000_no_cero.bray
 ```{r working_datasets2, echo=2}
-dim(otu_tb16_t_ss5000_no_cero.bray)
+#dim(otu_tb16_t_ss5000_no_cero.bray)
 otu_tb16_t_ss5000_no_cero.bray<-as.matrix(otu_tb16_t_ss5000_no_cero.bray)
 ```
 
@@ -361,7 +363,7 @@ plot(geo_distances_MP_16S_ss5000, otu_tb16_t_ss5000_no_cero.bray, pch=19, cex=0.
 
 ## 4.1) Mantel correlograms
 
-Mantel statistic is so low, meaning that the correlation between samples dissimilarity and geographical distances is weak; besides, it is not significant, so we shouldn't consider the test meaningful.
+When implementing the Mantel Test, we obtain a very low statistic, meaning that the correlation between samples dissimilarity and geographical distances is weak; besides, it is not significant, so we shouldn't consider the test meaningful.
 
 ```{r mantel_correlogram1, echo=T}
 mantel(geo_distances_MP_16S_ss5000, otu_tb16_t_ss5000_no_cero.bray)
@@ -388,7 +390,7 @@ plot(MP_16s_ss5000_mantel_correl_by_100km)
 
 # 5) Abundance vs. occurence
 
-```{r OTUs_mean_relative_abund, echo=F}
+```{r OTUs_mean_relative_abund, echo=F, message=FALSE}
 otu_tb16_t_ss5000_no_cero[1:5,1:5]
 otu_tb16_t_ss5000_no_cero_t<-t(otu_tb16_t_ss5000_no_cero)
 
@@ -407,7 +409,7 @@ otu_tb16_t_ss5000_no_cero_t.rabund_means<-as.data.frame(otu_tb16_t_ss5000_no_cer
 head(otu_tb16_t_ss5000_no_cero_t.rabund_means)
 ```
 
-```{r OTUs_occurence, echo=F}
+```{r OTUs_occurence, echo=F, message=FALSE}
 otu_tb16_t_ss5000_no_cero_t.rabund.occur<-otu_tb16_t_ss5000_no_cero_t.rabund
 otu_tb16_t_ss5000_no_cero_t.rabund.occur[otu_tb16_t_ss5000_no_cero_t.rabund.occur>0]<-1
 otu_tb16_t_ss5000_no_cero_t.rabund.occur[1:5,1:5] ### presence - absence table
@@ -418,7 +420,7 @@ otu_tb16_t_ss5000_no_cero_t.rabund_means.occurence_perc<-as.data.frame(100*(rowS
 str(otu_tb16_t_ss5000_no_cero_t.rabund_means.occurence_perc)
 ```
 
-```{r merge_rabund_peroccur, echo=F}
+```{r merge_rabund_peroccur, echo=F, message=FALSE}
 otu_tb16_ss5000_rabund_percoccur<-merge(otu_tb16_t_ss5000_no_cero_t.rabund_means,otu_tb16_t_ss5000_no_cero_t.rabund_means.occurence_perc, by="row.names")
 
 colnames(otu_tb16_ss5000_rabund_percoccur)<-c("OTUs","mean_rabund","perc_occur")
@@ -449,7 +451,11 @@ tb16_ss5000_abundant[order(-tb16_ss5000_abundant[,1]),]
 
 dim(otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund > 0.001,])  
 dim(tb16_ss5000_abundant)
+```
 
+Percentage of regionally abundant OTUs:
+
+```{r abundant_OTUs2, echo=F}
 #there are 157 regionally abundant OTUs.
 (82/1138)*100 # = 7.29% of the OTUs are regionally abundant
 
