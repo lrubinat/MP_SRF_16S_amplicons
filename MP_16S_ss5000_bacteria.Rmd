@@ -1,7 +1,7 @@
 ---
-title: "MALASPINA 18S amplicons analyisis"
+title: "MALASPINA SRF | 16S amplicons | Bacteria"
 author: "Logares R. & Rubinat-Ripoll L."
-date: "21/12/2015"
+date: "24.01.2015"
 output:
   html_document:
     theme: united
@@ -23,6 +23,7 @@ opts_chunk$set(cache=TRUE, autodep=TRUE)
 # 1) Data overview
 
 Samples with less than 5000 reads are removed: 
+
 ``` {r load_data, echo=FALSE, message=FALSE}
 #setwd("/genwork/lrubinat")
 setwd("/home/laura/Documents/TFM/genwork/data_analysis/MP_16S_SRF_amplicons/MP_16S_amplicons_ss5000/MP_16S_amplicons_ss5000_bacteria/")
@@ -58,26 +59,27 @@ otu_tb16_min5000_v2<-subset(otu_tb16_min5000, select=-c(MD985))
 ```
 
 Table dimensions and content outline:
+
 ```{r starting_dataset, echo=FALSE}
 dim(otu_tb16_min5000_v2)
 otu_tb16_min5000_v2[1:5,1:5]
 ```
 
-Minimum number of OTUs per station:
+Minimum number of reads per station:
 
 ```{r reads_per_sample_overview1, echo=1}
 min(colSums(otu_tb16_min5000_v2)) 
-#5862
+#5724
 ```
 
-Maximum number of OTUs per station:
+Maximum number of reads per station:
 
 ```{r reads_per_sample_overview2, echo=1}
 max(colSums(otu_tb16_min5000_v2)) 
-# max: 156843
+# max: 155539
 ```
 
-Identification of richest station:
+Identification of station with higher number of reads:
 
 ```{r reads_per_sample_overview3, echo=TRUE}
 amplicons_per_sample<-colSums(otu_tb16_min5000_v2)
@@ -108,7 +110,7 @@ dim(otu_tb16_t_ss5000)
 otu_tb16_t_ss5000[1:5,1:5]
 ```
 
-Its content fits on the expected normalization values (5000 reads per station):
+Its content fits with the expected normalization values (5000 reads per station):
 
 ``` {r species_richness_rarefaction3, echo=TRUE}
 rowSums(otu_tb16_t_ss5000)
@@ -126,7 +128,7 @@ There are 143 OTUs that don't show any occurrence in the normalized data. Let's 
 otu_tb16_t_ss5000_no_cero<-otu_tb16_t_ss5000[,-(which(colSums(otu_tb16_t_ss5000)==0))]
 dim(otu_tb16_t_ss5000_no_cero)
 
-#The final dimensions of the normalized table are 119 1138.
+#The final dimensions of the normalized table are 119 1035.
 #143+1035 = 1178
 ```
 
@@ -146,6 +148,7 @@ otu_tb16_ss5000_div <- diversity(otu_tb16_t_ss5000_no_cero, index="shannon")
 ```
 
 Most of the samples take Shannon Index values between 2.25 and 3.25:
+
 ```{r shannon_index2, echo=FALSE}
 boxplot(otu_tb16_ss5000_div, pch=19, main="Shannon's index of diversity")
 plot(sort(otu_tb16_ss5000_div), pch=19, main="Shannon's index of diversity")
@@ -158,16 +161,19 @@ OTUs_per_sample_16S_ss5000<-specnumber(otu_tb16_t_ss5000_no_cero)
 ```
 
 Lowest number of OTUs per sample:
+
 ```{r richness_otu_no2, echo=FALSE}
 min(OTUs_per_sample_16S_ss5000)
 ```
 
 Maximum number of OTUs per sample:
+
 ```{r richness_otu_no3, echo=FALSE}
 max(OTUs_per_sample_16S_ss5000)
 ```
 
 In most of the samples, we can identify between 200 and 250 OTUs:
+
 ```{r richness_otu_no4, echo=TRUE}
 plot(sort(OTUs_per_sample_16S_ss5000), pch=19)
 boxplot(OTUs_per_sample_16S_ss5000, pch=19)
@@ -194,7 +200,7 @@ The OTU_1, with 241688 reads, is the most abundant in the overall dataset:
 head(sort(colSums(otu_tb16_t_ss5000_no_cero), decreasing=T), n=10L)
 ```
 
-Most of the OTUs show very few occurrences, but we don't identify a massive group of rare OTUs:
+Most of the OTUs show few occurrences, but we don't observe the presence of a massive group of rare OTUs:
 
 ```{r OTUs_overall_abundance2, echo=TRUE}
 plot(log(sort(colSums(otu_tb16_t_ss5000_no_cero), decreasing=T)), pch=19)
@@ -240,6 +246,7 @@ lines(otu_tb16_min5000_dist_all, line.col="blue3")
 veiledspec(otu_tb16_min5000_dist_all)
 ```
 
+<!---
 ## 3.5) Rarefaction curve
 
 (To be computed)
@@ -261,13 +268,13 @@ veiledspec(otu_tb16_min5000_dist_all)
 #rarecurve(otu_tb18_colsums, step = 1, 50000, xlab = "Sample Size", ylab = "OTUs", label = TRUE)
 #rarecurve(colSums(otu_tb18_t), step = 1, 50000, xlab = "Sample Size", ylab = "OTUs", label = TRUE)
 ```
+--->
 
 ## 3.6) Beta diversity
 
 ### 3.6.1) Dissimilarity matrix using Bray-Curtis index:
 
-The Bray-Curtis dissimilarity, constrained between 0 (minimum distance) and 1 (highest dissimilarity) allows us to quantify the differences between samples according to the composition and relative abundance of their OTUs. In our dataset, most of the samples pairs take dissimilarity values between 0.25 and 0.5.
-
+The Bray-Curtis dissimilarity, constrained between 0 (minimum distance) and 1 (highest dissimilarity) allows us to quantify the differences between samples according to the composition and relative abundance of their OTUs. In our dataset, most of the samples pairs take dissimilarity values between 0.25 and 0.5, meaning that their composition is quiet similar.
 
 ```{r beta_div1, echo=FALSE}
 #?vegdist
@@ -279,7 +286,7 @@ boxplot(otu_tb16_t_ss5000_no_cero.bray, main="Bray-Curtis dissimilarity matrix")
 
 The only relatively evident clusters we can distinguish in the dendogram stand out in the very left side of the plot. 
 
-(To be done: assign Longhurst provinces information to each station and check if any of the central clusters is meaningful regarding to the samples geographical ubication)
+(To be done: assign Longhurst provinces information to each station and check if any of the central clusters is meaningful regarding to the samples' geographical ubication)
 
 ```{r beta_div2, echo=FALSE}
 #UPGMA
@@ -289,7 +296,9 @@ plot(otu_tb16_t_ss5000_no_cero.upgma, cex=.35, main="Samples Hierarchical Cluste
 
 ### 3.6.3) Non-metric multidimensional scaling
 
-We can identify a prominent group in the middle-left side of the NMDS and a few isolated samples in the right edge of the plot. Considering the overall distribution, we're to identify any informative clustering pattern. The stress parameter takes a value below 0.3 (0.1503428), meaning that the plot is valid. 
+We can identify a prominent group in the middle-left side of the NMDS and a few isolated samples in the right edge of the plot. Considering the overall distribution, we're not able to identify any informative clustering pattern. 
+
+The stress parameter takes a value below 0.3, meaning that the plot is valid. 
 
 ```{r monoNMDS, echo=F}
 #NMDS
@@ -339,18 +348,21 @@ dim(geo_distances_MP_16S_ss5000)
 Working datasets:
 
 1) Community matrix: otu_tb16_t_ss5000_no_cero
+
 ```{r working_datasets1, echo=T}
 dim(otu_tb16_t_ss5000_no_cero)
 otu_tb16_t_ss5000_no_cero[1:5, 1:5]
 ```
 
 2) Community Bray-Curtis: otu_tb16_t_ss5000_no_cero.bray
+
 ```{r working_datasets2, echo=2}
 #dim(otu_tb16_t_ss5000_no_cero.bray)
 otu_tb16_t_ss5000_no_cero.bray<-as.matrix(otu_tb16_t_ss5000_no_cero.bray)
 ```
 
 3) Stations distances in km: geo_distances_MP_16S_ss5000
+
 ```{r working_datasets3, echo=T}
 dim(geo_distances_MP_16S_ss5000)
 ```
@@ -358,7 +370,7 @@ dim(geo_distances_MP_16S_ss5000)
 Communities quickly change their composition across geographical distances:
 
 ```{r working_datasets4, echo=T}
-plot(geo_distances_MP_16S_ss5000, otu_tb16_t_ss5000_no_cero.bray, pch=19, cex=0.4, xlab="Geopgraphic distances", ylab="Bray-Curtis dissimilarities")
+plot(geo_distances_MP_16S_ss5000, otu_tb16_t_ss5000_no_cero.bray, pch=19, cex=0.4, xlab="Geopgraphical distances", ylab="Bray-Curtis dissimilarities")
 ```
 
 ## 4.1) Mantel correlograms
@@ -370,16 +382,19 @@ mantel(geo_distances_MP_16S_ss5000, otu_tb16_t_ss5000_no_cero.bray)
 ```
 
 Maximum distance between samples:
+
 ```{r mantel_correlogram2, echo=F}
 max(geo_distances_MP_16S_ss5000)
 ```
 
 Minimum distance between samples:
+
 ```{r mantel_correlogram3, echo=F}
 min(geo_distances_MP_16S_ss5000)
 ```
 
 Correlograms:
+
 ```{r mantel_correlogram4, echo=T}
 MP_16s_ss5000_mantel_correl_by_1000km<-mantel.correlog(otu_tb16_t_ss5000_no_cero.bray, D.geo=geo_distances_MP_16S_ss5000, break.pts=seq(0,20000, by=1000))
 plot(MP_16s_ss5000_mantel_correl_by_1000km)
@@ -431,7 +446,7 @@ otu_tb16_ss5000_rabund_percoccur<-otu_tb16_ss5000_rabund_percoccur[,-1]
 otu_tb16_ss5000_rabund_percoccur[1:5,]
 ```
 
-In the following plot, we can appreciate the OTUs distribution according to their percentage of occurence and relative abundance. The red line keeps up OTUs that occur in more than 80% of the samples, the green line limits regionally rare OTUs (0.001%), and the blue one restricts regionally abundant OTUs (> 0.1%).
+In the following plot, we can appreciate the OTUs distribution according to their percentage of occurence and relative abundance. The red line keeps up OTUs that occur in more than 80% of the samples, the green line limits regionally rare OTUs (< 0.001%), and the blue one restricts regionally abundant OTUs (> 0.1%).
 
 ```{r abund_vs_occurence_table, echo=F}
 plot(otu_tb16_ss5000_rabund_percoccur$mean_rabund,otu_tb16_ss5000_rabund_percoccur$perc_occur, log="x", pch=19, cex=0.8, xlab="Mean relative abundance", ylab="Percentage of occurence")
@@ -455,10 +470,10 @@ tb16_ss5000_abundant[order(-tb16_ss5000_abundant[,1]),]
 dim(tb16_ss5000_abundant)
 ```
 
-Percentage of regionally abundant OTUs:
+Proportion of regionally abundant OTUs (%):
 
 ```{r abundant_OTUs2, echo=F}
-#there are 157 regionally abundant OTUs.
+#there are 84 regionally abundant OTUs.
 (84/1138)*100 # = 7.29% of the OTUs are regionally abundant
 
 #length(row.names(otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund > 0.001,])) # 83 OTUs
@@ -476,13 +491,13 @@ otu_tb16_ss5000_cosmop_sorted
 dim(otu_tb16_ss5000_cosmop_sorted)
 ```
 
-Percentage of cosmopolitan OTUs:
+Proportion of cosmopolitan OTUs (%):
 
 ```{r percentage_cosmopolitan, echo=F}
 (63/1138)*100
 ```
 
-Number and percentage of rare OTUs:
+Number and proportion (%) of rare OTUs:
 
 ```{r rare_OTUs, echo=1}
 dim(otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund < 0.00001 & otu_tb16_ss5000_rabund_percoccur$mean_rabund >0,])
