@@ -459,15 +459,16 @@ abline(v=0.001, col="blue") #cosmopolitan OTUs
 #Regionally abundant = 0.001
 ```
 
-Regionally abundant OTUs (abundance over 0.1%):
+Regionally abundant OTUs (relative abundance over 0.1%):
 
-```{r abundant_OTUs, echo=6}
+```{r abundant_OTUs, echo=7}
 #regionally abundant
 tb16_ss5000_abundant<-otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund > 0.001,]
-tb16_ss5000_abundant[order(-tb16_ss5000_abundant[,1]),]
 
-#dim(otu_tb16_ss5000_rabund_percoccur[otu_tb16_ss5000_rabund_percoccur$mean_rabund > 0.001,])  
-dim(tb16_ss5000_abundant)
+tb16_ss5000_abundant_sorted<-tb16_ss5000_abundant[order(tb16_ss5000_abundant$mean_rabund, tb16_ss5000_abundant$perc_occur, decreasing = T), c(1,2)]
+
+tb16_ss5000_abundant_sorted
+dim(tb16_ss5000_abundant_sorted)
 ```
 
 Proportion of regionally abundant OTUs (%):
